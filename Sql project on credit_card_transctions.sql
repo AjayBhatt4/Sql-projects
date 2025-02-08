@@ -1,4 +1,4 @@
--- write a query to print top 5 cities with highest spends and their percentage contribution of total credit card spends 
+-- 1 write a query to print top 5 cities with highest spends and their percentage contribution of total credit card spends 
 with cte as (select city,sum(amount) as amount_spent
 from `credit_card_transcations (1)`
 group by city
@@ -11,7 +11,7 @@ cte_3 as (select c.city,amount_spent,total_amount from cte c inner join cte_2 on
 select city , amount_spent, total_amount,(amount_spent/total_amount)*100 as prcent_con from cte_3
 order by prcent_con desc;
 
--- write a query to print highest spend month and amount spent in that month for each card type
+-- 2 write a query to print highest spend month and amount spent in that month for each card type
 select * from `credit_card_transcations (1)`;
 select distinct exp_type from `credit_card_transcations (1)`;
 SELECT STR_TO_DATE(transaction_date, '%Y-%m-%d') 
@@ -42,7 +42,7 @@ where cum_sum>=1000000
  where rn=1;
 
 
--- - write a query to find city which had lowest percentage spend for gold card type
+-- -4 write a query to find city which had lowest percentage spend for gold card type
 with cte as  (  select city,card_type,sum(amount) as sum_t
 from `credit_card_transcations (1)`
 group by city,card_type
@@ -53,7 +53,7 @@ cte_2 as (select city, sum(amount) as total from `credit_card_transcations (1)` 
 select c.city,sum_t,total,(sum_t/total)*100 as p from cte c inner join cte_2 on c.city=cte_2.city
 order by p
 limit 1; 
--- write a query to print 3 columns:  city, highest_expense_type , lowest_expense_type (example format : Delhi , bills, Fuel)
+-- 5 write a query to print 3 columns:  city, highest_expense_type , lowest_expense_type (example format : Delhi , bills, Fuel)
 select * from `credit_card_transcations (1)`;
 with cte as (select city, exp_type,sum(amount) as exp
 from `credit_card_transcations (1)`
@@ -70,7 +70,7 @@ max(case when low_exp=1 then exp_type end )as lowest_exp
 from  cte_2
 group by city;
 
--- write a query to find percentage contribution of spends by females for each expense type
+-- 6 write a query to find percentage contribution of spends by females for each expense type
 select * from `credit_card_transcations (1)`;
 with cte as 
 (select gender,exp_type,sum(amount) as amount_spent
@@ -83,7 +83,7 @@ select gender,exp_type,amount_spent,t_amount,(amount_spent/t_amount)* 100 as per
 from (select gender,c.exp_type,t_amount,amount_spent from cte c inner join cte_2 x on c.exp_type=x.exp_type)A
 order by percent_f desc;
 
--- which card and expense type combination saw highest month over month growth in Jan-2014
+--7 which card and expense type combination saw highest month over month growth in Jan-2014
 with cte as(
 select card_type,exp_type,amount,extract(month from transaction_date ) as month_m,extract( year from transaction_date ) as year_y
 from `credit_card_transcations (1)`
@@ -98,7 +98,7 @@ select * from (select card_type,exp_type,dense_rank()over (order by diff) as rn 
 where rn=1;
 
 
--- during weekends which city has highest total spend to total no of transcations ratio
+-- 8 during weekends which city has highest total spend to total no of transcations ratio
 select city,transaction_date,count(*) as total_transcation from `credit_card_transcations (1)`
 group by city,transaction_date
 order by city,transaction_date;
